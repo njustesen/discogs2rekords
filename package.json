@@ -1,0 +1,25 @@
+{
+  "name": "node3app",
+  "version": "0.0.1",
+  "description": "A sample Node.js app using Express 3",
+  "main": "server.js",
+  "scripts": {
+    "start": "nodejs server.js"
+  },
+  "dependencies": {
+    "express": "~4.9.x"
+  },
+  "engines": {
+    "node": "0.10.x",
+    "npm": "1.4.28"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/njustesen/node3app"
+  },
+  "keywords": [
+    "node",
+    "express"
+  ],
+  "license": "MIT"
+}

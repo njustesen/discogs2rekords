@@ -1,0 +1,12 @@
+extend layout
+block content
+  #alerts
+  #search
+    .input-group
+      .header Discogs2Rekords
+      button.btn.btn-xl.btn-danger.but#clear(type="button") Clear
+      button.btn.btn-xl.btn-primary.but#markall(type="button") Mark all
+      .tokenfield.form-control(type="text", value="")
+  #content
+    table.table
+      tbody#rekords
