@@ -175,11 +175,14 @@ function catalog(release){
 function releaseInfo(release){
 	var text = '';
 	var artists = '';
+	console.log("-- Artists --")
+	console.log(JSON.stringify(release.artists));
 	for(var a in release.artists){
 		artists += bestname(release.artists[a]);
 		if (release.artists[a].join != ',')
 			artists += ' ';
-		artists += release.artists[a].join + ' \n';
+		if (a < release.artists.length - 1)
+			artists += release.artists[a].join + ' \n';	
 	}
 	text += artists + ' - ' + release.title + ', ';
 	var formats = 0;

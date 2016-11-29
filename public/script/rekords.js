@@ -97,10 +97,10 @@ function call(e){
 					$(e.target).css('background-color','#66c');
 				}
 			} else {
-				if (added.indexOf(e.id) > -1){
-					removeFromQueue(e.id);
-					return;
-				}
+				//if (added.indexOf(e.id) > -1){
+				//	removeFromQueue(e.id);
+				//	return;
+				//}
 				$(e.target).css('background-color','#6f6');
 				var row = $('<tr></tr>');
 	    		row.append('<td style="width:100px; word-wrap:break-word;">' + data.releaseInfo + '</td>');
