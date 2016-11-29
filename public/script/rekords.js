@@ -74,10 +74,17 @@ function call(e){
 	$.post( "/rekords/"+e.id, {} )
 		.done(function( data ) {
 			if (data.error !== undefined){
-				$(e.target).css('background-color','#f66');
+				if (data.error.indexOf("No release found for") >= 0){
+					$(e.target).css('background-color','#f66');
+					removeFromQueue(e.id);
+				} else {
+					$(e.target).css('background-color','#66c');
+				}
 			} else {
-				if (added.indexOf(e.id) > -1)
+				if (added.indexOf(e.id) > -1){
+					removeFromQueue(e.id);
 					return;
+				}
 				$(e.target).css('background-color','#6f6');
 				var row = $('<tr></tr>');
 	    		row.append('<td style="width:100px; word-wrap:break-word;">' + data.releaseInfo + '</td>');
