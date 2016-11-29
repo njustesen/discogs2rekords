@@ -1,6 +1,14 @@
 var queue = [];
 var added = [];
 
+gameLoaded = false
+setInterval(function(){
+	if (!gameLoaded){
+		$('.game').blockrain();
+		gameLoaded = true
+	}
+},1000);
+
 setInterval(function(){
 		if (queue.length>0)
     		call(queue[0]);
@@ -15,6 +23,14 @@ $( document ).ready(function() {
 	$('#clear').on('click', function(){
 		$('#rekords').html('');
 		$('.token').remove();
+	});
+
+	$('#tetris').on('click', function(){
+		if ($('#float-container').hasClass("hidden")){
+			$('#float-container').removeClass("hidden")
+		} else {
+			$('#float-container').addClass("hidden")
+		}
 	});
 
 	$('.tokenfield')

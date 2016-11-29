@@ -1,17 +1,20 @@
 doctype
 html
   head
-    title #{title} - My Site
+    title #{title}
     link(rel='stylesheet', href='/style/bootstrap.min.css')
     link(rel='stylesheet', href='/style/bootstrap-theme.min.css')
     link(rel='stylesheet', href='/style/bootstrap-tokenfield.min.css')
     link(rel='stylesheet', href='/style/tokenfield-typeahead.min.css')
     link(rel='stylesheet', href='/style/style.css')
+    link(rel='stylesheet', href='/style/blockrain.css')
     script(src="/script/jquery-1.11.1.min.js")
+    script(src="/script/blockrain.jquery.min.js")
     script(src="/script/bootstrap-tokenfield.min.js")
     script(src="/script/bootstrap.min.js")
     script(src="/script/rekords.js")
   body
     .container
       block content
-    
+    div#float-container.hidden(style="position:absolute; top:100px; width:100%")
+      .game(style='margin-left:auto; margin-right:auto;width:250px; height:500px;')
