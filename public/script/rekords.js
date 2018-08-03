@@ -1,5 +1,6 @@
-var queue = [];
-var added = [];
+var free = [];
+var taken = [];
+var done = [];
 
 gameLoaded = false
 setInterval(function(){
@@ -10,9 +11,9 @@ setInterval(function(){
 },1000);
 
 setInterval(function(){
-		if (queue.length>0)
-    		call(queue[0]);
-    },2000);
+	if (free.length>0)
+		call(free[0]);
+},2000);
 
 $( document ).ready(function() {
 	
@@ -20,8 +21,13 @@ $( document ).ready(function() {
 		alert("Den virker jo ikke Jakob");
 	});
 
+	$('#images').on('click', function(){
+		downloadImages();
+	});
+
 	$('#clear').on('click', function(){
 		$('#rekords').html('');
+		$('#rekords-images').html('');
 		$('.token').remove();
 	});
 
@@ -44,7 +50,7 @@ $( document ).ready(function() {
 	    } else {
 	    	var target = e.relatedTarget;
 	    	var id = target.textContent.substring(0,target.textContent.length-1);
-	    	queue.push({id:id, target:target}); 	
+	    	free.push({id:id, target:target});
 	    }
 
 	})
@@ -71,22 +77,39 @@ $( document ).ready(function() {
 
 });
 
+// IMAGE DOWNLOADER
+function downloadImages(){
+
+	var images = document.getElementsByTagName('img');
+	var i = 0;
+
+	setInterval(function(){
+	    if(images.length > i){
+	        window.open(images[i].src,'_blank');
+	        i++;
+	    }
+	},1000);
+
+}
+// ---------
+
 function removeFromQueue(id){
 	var idx = -1;
 	var i = 0;
-	queue.forEach(function(e){
+	free.forEach(function(e){
 		if (e.id == id){
 			idx = i;
 		}
 		i++;
 	});
 	if (idx > -1){
-		queue.splice(idx,1);
+		free.splice(idx,1);
 	}
 }
 
 function call(e){
-
+	removeFromQueue(e.id);
+		
 	$.post( "/rekords/"+e.id, {} )
 		.done(function( data ) {
 			if (data.error !== undefined){
@@ -116,9 +139,10 @@ function call(e){
 	    		for(var i = 0; i < 3; i++)
 	    			row.append('<td></td>');
 	    		row.append('<td width=100px>' + data.labels + '</td>');
-				$('#rekords').append(row);
+	    		$('#rekords').append(row);
+				$('#rekords-images').append('<img src="' + data.img + '">');
 				removeFromQueue(e.id);
-				added.push(e.id);
+				done.push(e.id);
 			}
 		})
 		.fail(function ( data ) {

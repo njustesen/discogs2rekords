@@ -38,6 +38,10 @@ body {
 	margin-left:8px;
 }
 
+.btn-info {
+	width: 130px;
+}
+
 .input-group{
 	width: 100%;
 	margin-bottom: 16px;

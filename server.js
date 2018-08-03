@@ -1,5 +1,6 @@
 
 var http = require('http');
+var https = require('https');
 var express = require('express');
 var app = express();
 var Discogs = require('disconnect').Client;
@@ -34,7 +35,11 @@ app.post('/rekords/:id', function(req, res) {
 	console.log(id);
 	
 	var db = new Discogs().database();
+	
     db.release(id, function(err, data){
+
+    	console.log("Requesting for " + id);
+
     	if (data === undefined || catalog(data) === ""){
     		console.log("No release found for " + id);
     		res.json({error: 'No release found for ' + id});    		
@@ -54,20 +59,50 @@ app.post('/rekords/:id', function(req, res) {
     	var weight = data.estimated_weight;
     	console.log("WEIGHT: " + weight);
     	var country = data.country;
-    	if (country === undefined)
-    		country = "";
-        res.json(
-  			{ 
-  				releaseInfo : info,
-  				country 	: country,
-  				catalog 	: catno,
-  				rekords 	: rekords,
-  				released 	: year,
-  				//weight		: weight / 1000,
-  				weight  	: "",
-  				labels		: labs
-  			}
-  		)
+
+    	// Get image
+    	console.log("Requesting image for " + id);
+    	https.get(data.uri, (resp) => {
+			let webdata = '';
+		 
+			// A chunk of data has been recieved.
+			resp.on('data', (chunk) => {
+			    webdata += chunk;
+			});
+		 
+			// The whole response has been received. Print out the result.
+			resp.on('end', () => {
+
+				console.log("Returning data for " + id)
+		    	var img = getImg(webdata)
+		    	
+		    	if (country === undefined)
+		    		country = "";
+
+		        res.json(
+		  			{
+		  				data 		: data,  
+		  				webdata     : webdata,
+		  				img         : img,
+		  				releaseInfo : info,
+		  				country 	: country,
+		  				catalog 	: catno,
+		  				rekords 	: rekords,
+		  				released 	: year,
+		  				//weight		: weight / 1000,
+		  				weight  	: "",
+		  				labels		: labs,
+		  		//		img			: img
+		  			}
+		  		)
+		  		return;
+			});
+		 
+		}).on("error", (err) => {
+			res.json({error: 'Could not get image URL. ' + err.message});    
+		  	console.log("Error: " + err.message);
+		});
+    	
     });
 
 });
@@ -127,6 +162,10 @@ app.get('*', function(req, res) {
 	res.sendFile(__dirname + '/public/'); // Derect to angular
 });
 
+function getImg(html){
+	return html.split('property="og:image" content="')[1].split('.jpg"')[0] + '.jpg';
+}
+
 function released(release){
 	if (release.released === undefined){
 		return "";
@@ -149,8 +188,9 @@ function labels(release){
 		if (!contains(ids, release.labels[c].id)){
 			if (i == 0)
 				text += release.labels[c].name;
-			else
-				text += ', ' + release.labels[c].name;
+			// Add to show multiple labels
+			//else
+			//	text += ', ' + release.labels[c].name;
 			i++;
 			ids.push(release.labels[c].id);
 		}
@@ -164,8 +204,9 @@ function catalog(release){
 	for(var c in release.labels){
 		if (i == 0)
 			text += release.labels[c].catno;
-		else
-			text += ', ' + release.labels[c].catno;
+		// Add to show multiple catalogs
+		//else
+		//	text += ', ' + release.labels[c].catno;
 		i++;
 		console.log(release.labels[c].catno);
 	}
@@ -200,6 +241,12 @@ function releaseInfo(release){
 			var desc = release.formats[f].descriptions[d];
 			if(desc === 'LP' && release.formats[f].qty > 1)
 				desc = release.formats[f].qty + 'xLP';
+			if(desc === '12"' && release.formats[f].qty > 1)
+				desc = release.formats[f].qty + 'x12"';
+			if(desc === '10"' && release.formats[f].qty > 1)
+				desc = release.formats[f].qty + '10"';
+			if(desc === '7"' && release.formats[f].qty > 1)
+				desc = release.formats[f].qty + '7"';
 			if (i==0)
 				text += desc;
 			else
