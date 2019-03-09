@@ -187,7 +187,7 @@ function labels(release){
 	for(var c in release.labels){
 		if (!contains(ids, release.labels[c].id)){
 			if (i == 0)
-				text += release.labels[c].name;
+				text += release.labels[c].name.split(' (')[0];
 			// Add to show multiple labels
 			//else
 			//	text += ', ' + release.labels[c].name;
@@ -239,6 +239,8 @@ function releaseInfo(release){
 		}
 		for(var d in release.formats[f].descriptions){
 			var desc = release.formats[f].descriptions[d];
+			if ((['album', 'compilation', 'unofficial release', 'numbered', '33 ⅓ RPM', '45 RPM', 'single', 'limited edition', 'white label', 'picture disc', 'maxi-single', 'mixed', 'partially'].indexOf(desc.toLowerCase()) >= 0))
+				continue;
 			if(desc === 'LP' && release.formats[f].qty > 1)
 				desc = release.formats[f].qty + 'xLP';
 			if(desc === '12"' && release.formats[f].qty > 1)
