@@ -126,6 +126,7 @@ function call(e){
 				//}
 				$(e.target).css('background-color','#6f6');
 				var row = $('<tr></tr>');
+				row.append('<td style="width:100px; word-wrap:break-word;">' + data.data.id + '</td>');
 	    		row.append('<td style="width:100px; word-wrap:break-word;">' + data.releaseInfo + '</td>');
 	    		row.append('<td width=82px>' + data.country + '</td>');
 	    		row.append('<td width=120px>' + data.catalog + '</td>');
